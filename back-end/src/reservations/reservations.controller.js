@@ -48,6 +48,7 @@ function validateDateIsFormattedCorrect(req, res, next) {
  * List handler for reservation resources
  */
 async function list(req, res) {
+  console.log(`received the following date: ${req.query.date}`)
   const data = await service.list(req.query.date);
   res.json({ data });
 }

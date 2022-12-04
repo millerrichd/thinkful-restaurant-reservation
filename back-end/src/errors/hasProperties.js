@@ -9,6 +9,9 @@
   return function (res, req, next) {
     const { data = {} } = res.body;
 
+    console.log(`received the following data`)
+    console.log(data)
+
     try {
       properties.forEach((property) => {
         const value = data[property];
