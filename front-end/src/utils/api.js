@@ -30,11 +30,8 @@ headers.append("Content-Type", "application/json");
  *  If the response is not in the 200 - 399 range the promise is rejected.
  */
 async function fetchJson(url, options, onCancel) {
-  console.log("URL", url)
-  console.log("OPTIONS", options)
   try {
     const response = await fetch(url, options);
-    console.log(response)
     if (response.status === 204) {
       return null;
     }
@@ -76,7 +73,6 @@ export async function listReservations(params, signal) {
 
 export async function createNewReservation(data, signal) {
   //first format the data from firstName -> first_name, etc... because that is what the api is expecting
-  console.log("DATA", data)
   const formattedData = { 
     data: {
       first_name: data.first_name,
@@ -87,7 +83,6 @@ export async function createNewReservation(data, signal) {
       people: Number(data.people)
     }
   }
-  console.log(formattedData)
   //second make the api call to the backend
   const url = new URL(`${API_BASE_URL}/reservations`)
   const options = {
@@ -96,7 +91,6 @@ export async function createNewReservation(data, signal) {
     body: JSON.stringify(formattedData),
     signal
   }
-  console.log(options)
   return await fetchJson(url, options, [])
     .then(formatReservationDate)
     .then(formatReservationTime);

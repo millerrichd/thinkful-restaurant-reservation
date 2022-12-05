@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import { Link, useHistory } from "react-router-dom";
 import { createNewReservation } from "../utils/api";
-
+import ErrorAlert from "../layout/ErrorAlert"
 import FormReservation from "./FormReservation";
 
 function NewReservation({setDate}) {
@@ -14,17 +14,16 @@ function NewReservation({setDate}) {
     people: 1
   }
   const [formData, setFormData] = useState(initialForm);
+  const [errorMessages, setErrorMessages] = useState([])
   const history = useHistory();
 
   const handleCancel = () => {
     history.goBack();
   }
-
+ 
   const handleSubmit = async (event) => {
-    console.log("FORMDATA", formData)
     event.preventDefault();
     const result = await createNewReservation(formData);
-    console.log("RESULT", result)
     setDate(formData.reservation_date)
     setFormData(initialForm);
     history.push(`/dashboard`)
@@ -32,7 +31,10 @@ function NewReservation({setDate}) {
 
   return (
     <>
-      <FormReservation handleSubmit={handleSubmit} handleCancel={handleCancel} setFormData={setFormData} formData={formData} />
+      {errorMessages.map((errorMsg) => (
+        <ErrorAlert error={errorMsg}/>
+      ))}
+      <FormReservation handleSubmit={handleSubmit} handleCancel={handleCancel} setFormData={setFormData} formData={formData} setErrorMessages={setErrorMessages} />
     </>
   )
 }

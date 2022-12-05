@@ -1,8 +1,28 @@
 import React from "react";
+import { today } from "../utils/date-time"
 
-function FormReservation({handleSubmit, handleCancel, setFormData, formData}) {
+function FormReservation({handleSubmit, handleCancel, setFormData, formData, setErrorMessages}) {
   const handleChange = ({target}) => {
-    setFormData({...formData, [target.name]: target.value});
+    if(target.name === "reservation_date") {
+      const errorMessages = []
+      const reservationDate = new Date(target.value).toUTCString()
+      if(target.value < today()) {
+        const pastError = new Error(`Date in the past. Please select a day in the future.`);
+        errorMessages.push(pastError)
+      }
+      if(reservationDate.includes("Tue")) {
+        const tueError = new Error(`We are closed on Tuesdays. Please select another date.`);
+        errorMessages.push(tueError)
+      }
+      if(errorMessages.length > 0) {
+        setErrorMessages(errorMessages)
+      } else {
+        setErrorMessages([])
+        setFormData({...formData, [target.name]: target.value})
+      }
+    } else {
+      setFormData({...formData, [target.name]: target.value});
+    }
   }
 
   return (
