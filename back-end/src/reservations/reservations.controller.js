@@ -19,12 +19,26 @@ function validatePeopleIsANumber(req, res, next) {
 /**
  * validate that the date is in YYYY-MM-DD format
  */
-function validateDateIsFormattedCorrect(req, res, next) {
+function validateDateIsFormattedCorrectAndNotTuesdaysOrInPast(req, res, next) {
   const { data = {} } = req.body;
   if(data.reservation_date.match(/\d{4}-\d{2}-\d{2}/)) {
     next();
   } else {
     const error = new Error(`A 'reservation_date' is required to be a YYYY-MM-DD format.`);
+    error.status = 400;
+    throw error;
+  }
+
+  const today = new Date().toUTCString()
+  const reservationDate = new Date(data.reservation_date).toUTCString()
+
+  if(reservationDate < today) {
+    const error = new Error(`Date selected is in the past. Please select something in the future.`);
+    error.status = 400;
+    throw error;
+  }
+  if(reservationDate.includes("Tue")) {
+    const error = new Error(`Date selected is a Tuesday. We are closed on Tuesdays.`)
     error.status = 400;
     throw error;
   }
@@ -66,7 +80,7 @@ module.exports = {
   create: [
     hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people"),
     validatePeopleIsANumber,
-    validateDateIsFormattedCorrect,
+    validateDateIsFormattedCorrectAndNotTuesdaysOrInPast,
     validateTimeIsFormattedCorrect,
     asyncErrorBoundary(create)]
 };
