@@ -32,13 +32,13 @@ function validateDateIsFormattedCorrectAndNotTuesdaysOrInPast(req, res, next) {
   const today = new Date().toUTCString()
   const reservationDate = new Date(data.reservation_date).toUTCString()
 
-  if(reservationDate < today) {
-    const error = new Error(`Date selected is in the past. Please select something in the future.`);
+  if(reservationDate.includes("Tue")) {
+    const error = new Error(`Date selected is a Tuesday. We are closed on Tuesdays.`)
     error.status = 400;
     throw error;
   }
-  if(reservationDate.includes("Tue")) {
-    const error = new Error(`Date selected is a Tuesday. We are closed on Tuesdays.`)
+  if(reservationDate < today) {
+    const error = new Error(`Date selected is in the past. Please select something in the future.`);
     error.status = 400;
     throw error;
   }
@@ -47,12 +47,17 @@ function validateDateIsFormattedCorrectAndNotTuesdaysOrInPast(req, res, next) {
 /**
  * validate the time is formatted correctly
  */
- function validateTimeIsFormattedCorrect(req, res, next) {
+ function validateTimeIsFormattedCorrectAndInCorrectWindow(req, res, next) {
   const { data = {} } = req.body;
-  if(data.reservation_time.match(/\d?:\d{2}/)) {
+  if(data.reservation_time.match(/\d\d?:\d{2}/)) {
     next();
   } else {
     const error = new Error(`A 'reservation_time' is required to be a HH:MM format.`);
+    error.status = 400;
+    throw error;
+  }
+  if(data.reservation_time < "10:30" || data.reservation_time > "21:30") {
+    const error = new Error(`The restuarant is only accepting reservations from 10:30 AM to 9:30 PM.`);
     error.status = 400;
     throw error;
   }
@@ -81,6 +86,6 @@ module.exports = {
     hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people"),
     validatePeopleIsANumber,
     validateDateIsFormattedCorrectAndNotTuesdaysOrInPast,
-    validateTimeIsFormattedCorrect,
+    validateTimeIsFormattedCorrectAndInCorrectWindow,
     asyncErrorBoundary(create)]
 };
