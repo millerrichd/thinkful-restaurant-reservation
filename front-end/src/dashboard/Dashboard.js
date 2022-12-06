@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { Link , useHistory } from "react-router-dom";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { today, previous, next } from "../utils/date-time"
@@ -13,7 +12,6 @@ import { today, previous, next } from "../utils/date-time"
 function Dashboard({ date, setDate }) {
   const [reservations, setReservations] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
-  const history = useHistory();
 
   useEffect(loadDashboard, [date]);
 

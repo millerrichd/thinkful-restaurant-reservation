@@ -8,6 +8,7 @@ const hasProperties = require("../errors/hasProperties");
  */
 function validatePeopleIsANumber(req, res, next) {
   const { data = {} } = req.body;
+  console.log("TYPEOF PEOPLE", typeof data.people)
   if(Number.isInteger(data.people) && data.people > 0) {
     next();
   } else {

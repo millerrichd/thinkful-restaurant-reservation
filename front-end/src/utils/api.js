@@ -5,7 +5,7 @@
 import formatReservationDate from "./format-reservation-date";
 import formatReservationTime from "./format-reservation-date";
 
-const API_BASE_URL =
+export const API_BASE_URL =
   process.env.REACT_APP_API_BASE_URL || "http://localhost:5001";
 
 /**
@@ -63,35 +63,6 @@ export async function listReservations(params, signal) {
     url.searchParams.append(key, value.toString())
   );
   return await fetchJson(url, { headers, signal }, [])
-    .then(formatReservationDate)
-    .then(formatReservationTime);
-}
-
-/** 
- * Sumbit a new reservation.
- */
-
-export async function createNewReservation(data, signal) {
-  //first format the data from firstName -> first_name, etc... because that is what the api is expecting
-  const formattedData = { 
-    data: {
-      first_name: data.first_name,
-      last_name: data.last_name,
-      mobile_number: data.mobile_number,
-      reservation_date: data.reservation_date,
-      reservation_time: data.reservation_time,
-      people: Number(data.people)
-    }
-  }
-  //second make the api call to the backend
-  const url = new URL(`${API_BASE_URL}/reservations`)
-  const options = {
-    method: "POST",
-    headers,
-    body: JSON.stringify(formattedData),
-    signal
-  }
-  return await fetchJson(url, options, [])
     .then(formatReservationDate)
     .then(formatReservationTime);
 }
