@@ -1,3 +1,4 @@
+const moment = require("moment");
 const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require("../errors/hasProperties");
@@ -19,7 +20,7 @@ function validatePeopleIsANumber(req, res, next) {
 /**
  * validate that the date is in YYYY-MM-DD format
  */
-function validateDateIsFormattedCorrectAndNotTuesdaysOrInPast(req, res, next) {
+function validateDateIsFormattedCorrect(req, res, next) {
   const { data = {} } = req.body;
   if(data.reservation_date.match(/\d{4}-\d{2}-\d{2}/)) {
     next();
@@ -28,26 +29,12 @@ function validateDateIsFormattedCorrectAndNotTuesdaysOrInPast(req, res, next) {
     error.status = 400;
     throw error;
   }
-
-  const today = new Date().toUTCString()
-  const reservationDate = new Date(data.reservation_date).toUTCString()
-
-  if(reservationDate.includes("Tue")) {
-    const error = new Error(`Date selected is a Tuesday. We are closed on Tuesdays.`)
-    error.status = 400;
-    throw error;
-  }
-  if(reservationDate < today) {
-    const error = new Error(`Date selected is in the past. Please select something in the future.`);
-    error.status = 400;
-    throw error;
-  }
 }
 
 /**
  * validate the time is formatted correctly
  */
- function validateTimeIsFormattedCorrectAndInCorrectWindow(req, res, next) {
+ function validateTimeIsFormattedCorrect(req, res, next) {
   const { data = {} } = req.body;
   if(data.reservation_time.match(/\d\d?:\d{2}/)) {
     next();
@@ -56,12 +43,28 @@ function validateDateIsFormattedCorrectAndNotTuesdaysOrInPast(req, res, next) {
     error.status = 400;
     throw error;
   }
-  if(data.reservation_time < "10:30" || data.reservation_time > "21:30") {
-    const error = new Error(`The restuarant is only accepting reservations from 10:30 AM to 9:30 PM.`);
+}
+
+function validateWindow(req, res, next) {
+  const { data = {} } = req.body;
+  const today = moment()
+  const testDateTime = moment(`${data.reservation_date}T${data.reservation_time}Z`)
+
+  if(testDateTime < today) { 
+    const error = new Error(`Date occurs in the past. Please select a date and time in the future.`)
     error.status = 400;
-    throw error;
+    throw error
+  } else if (testDateTime.format('dddd') === "Tuesday") {
+    const error = new Error(`We are closed on Tuesday's, please select another day.`)
+    error.status = 400;
+    throw error
+  } else if (data.reservation_time < "10:30" || data.reservation_time > "21:30") {
+    const error = new Error(`The restaurant does not accept reservations before 10:30 AM and after 9:30 PM.`)
+    error.status = 400;
+    throw error
   }
- }
+  next();
+}
 
 /**
  * List handler for reservation resources
@@ -85,7 +88,8 @@ module.exports = {
   create: [
     hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people"),
     validatePeopleIsANumber,
-    validateDateIsFormattedCorrectAndNotTuesdaysOrInPast,
-    validateTimeIsFormattedCorrectAndInCorrectWindow,
+    validateDateIsFormattedCorrect,
+    validateTimeIsFormattedCorrect,
+    validateWindow,
     asyncErrorBoundary(create)]
 };
