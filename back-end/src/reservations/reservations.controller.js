@@ -12,7 +12,7 @@ function validatePeopleIsANumber(req, res, next) {
   if(Number.isInteger(data.people) && data.people > 0) {
     next();
   } else {
-    const error = new Error(`A 'people' is required to be a number and positive.`);
+    const error = new Error(`'People' is required to be a number and positive.`);
     error.status = 400;
     throw error;
   }
@@ -84,6 +84,24 @@ async function create(req, res, next) {
   res.status(201).json({data});
 }
 
+/**
+ * Read the current reservation record
+ */
+async function reservationExists(req, res, next) {
+  const { reservationId } = req.params;
+  const data = await service.read(reservationId);
+  if(data) {
+    res.locals.reservation = data;
+    return next();
+  }
+  next({status: 404, message: "Reservation not found."});
+}
+
+async function read(req, res, next) {
+  const data = res.locals.reservation;
+  res.json({data});
+}
+
 module.exports = {
   list,
   create: [
@@ -92,5 +110,10 @@ module.exports = {
     validateDateIsFormattedCorrect,
     validateTimeIsFormattedCorrect,
     validateWindow,
-    asyncErrorBoundary(create)]
+    asyncErrorBoundary(create)
+  ],
+  read: [
+    asyncErrorBoundary(reservationExists),
+    read
+  ]
 };
