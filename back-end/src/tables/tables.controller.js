@@ -7,7 +7,7 @@ const hasProperties = require("../errors/hasProperties");
 /**
  * Validate table length is at least 2+ characters
  */
-async function verifyTableNameLength(req, res, next) {
+function verifyTableNameLength(req, res, next) {
   const { data } = req.body;
   if(data.table_name.length > 1) {
     next();
@@ -21,7 +21,7 @@ async function verifyTableNameLength(req, res, next) {
 /**
  * Confirm that property capacity is a positive number
  */
- function verifyCapacityIsNumber(req, res, next) {
+function verifyCapacityIsNumber(req, res, next) {
   const { data } = req.body;
   if(Number.isInteger(data.capacity) && data.capacity > 0) {
     next();
