@@ -64,6 +64,20 @@ async function verifyTableHasCapacity(req, res, next) {
 }
 
 /**
+ * Verify that a seat is occupied before deleting
+ */
+
+function verifySeatOccupiedForDelete(req, res, next) {
+  const { reservation_id } = res.locals.table
+  if(!reservation_id) {
+    const error = new Error("Table is not occupied, so nothing to clean up.")
+    error.status = 400;
+    throw error;
+  }
+  return next();
+}
+
+/**
  * Read the table object from the db
  */
 async function tableExists(req, res, next) {
@@ -73,7 +87,7 @@ async function tableExists(req, res, next) {
     res.locals.table = tableFound;
     return next();
   }
-  next({status: 404, message: "Table not found."});
+  next({status: 404, message: `Table '${tableId}' not found.`});
 }
 
 /**
@@ -102,6 +116,15 @@ async function seat(req, res, next) {
   res.json({data})
 }
 
+/**
+ * Delete a Seating
+ */
+async function deleteSeat(req, res, next) {
+  const { table_id } = res.locals.table
+  const data = await service.deleteSeat(table_id);
+  res.json({data})
+}
+
 module.exports = {
   list,
   create: [
@@ -115,5 +138,10 @@ module.exports = {
     hasProperties("reservation_id"),
     asyncErrorBoundary(verifyTableHasCapacity),
     asyncErrorBoundary(seat)
+  ],
+  deleteSeat: [
+    asyncErrorBoundary(tableExists),
+    verifySeatOccupiedForDelete,
+    asyncErrorBoundary(deleteSeat)
   ]
 };

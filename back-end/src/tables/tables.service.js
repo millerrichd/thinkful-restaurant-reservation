@@ -39,9 +39,21 @@ function seat(tableId, reservationId) {
     .then(updated => updated[0]);
 }
 
+/**
+ * Delete a Seat's reservation_id
+ */
+function deleteSeat(tableId) {
+  return knex("tables as t")
+    .where({"t.table_id": tableId})
+    .update({reservation_id: null}, "t.reservation_id" )
+    .then(updated => updated[0]);
+}
+
+
 module.exports = {
   create,
   read,
   list,
-  seat
+  seat,
+  deleteSeat
 }
