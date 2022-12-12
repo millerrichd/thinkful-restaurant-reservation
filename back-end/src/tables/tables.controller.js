@@ -66,7 +66,6 @@ async function verifyTableHasCapacity(req, res, next) {
 /**
  * Verify that a seat is occupied before deleting
  */
-
 function verifySeatOccupiedForDelete(req, res, next) {
   const { reservation_id } = res.locals.table
   if(!reservation_id) {
@@ -75,6 +74,20 @@ function verifySeatOccupiedForDelete(req, res, next) {
     throw error;
   }
   return next();
+}
+
+/** 
+ * Verify that the res.locals.reservation is not finished
+ */
+function verifyIfReservationIsNotSeated(req, res, next) {
+  const reservation = res.locals.reservation;
+  if(reservation.status === "seated") {
+    const error = new Error(`This reservation has already been seated.`)
+    error.status = 400;
+    throw error;
+  } else {
+    next();
+  }
 }
 
 /**
@@ -137,6 +150,7 @@ module.exports = {
     asyncErrorBoundary(tableExists),
     hasProperties("reservation_id"),
     asyncErrorBoundary(verifyTableHasCapacity),
+    verifyIfReservationIsNotSeated,
     asyncErrorBoundary(seat)
   ],
   deleteSeat: [

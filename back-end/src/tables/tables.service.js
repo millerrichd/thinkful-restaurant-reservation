@@ -32,21 +32,32 @@ function create(table) {
 /**
  * Set the seat
  */
-function seat(tableId, reservationId) {
-  return knex("tables as t")
-    .where({"t.table_id": tableId})
-    .update({reservation_id: reservationId}, "t.reservation_id" )
-    .then(updated => updated[0]);
+async function seat(tableId, reservationId) {
+  return await knex.transaction(async(trx) => {
+    await Promise.all([
+      trx("tables").where({table_id: tableId}).update({reservation_id: reservationId}, "reservation_id"),
+      trx("reservations").where({reservation_id: reservationId}).update({status: "seated"}),
+    ])
+    return await knex.transaction(async(trx) => {
+      trx("reservations").select('*').where({reservation_id: reservationId}).first()
+    })
+  })
 }
 
 /**
  * Delete a Seat's reservation_id
  */
-function deleteSeat(tableId) {
-  return knex("tables as t")
-    .where({"t.table_id": tableId})
-    .update({reservation_id: null}, "t.reservation_id" )
-    .then(updated => updated[0]);
+async function deleteSeat(tableId) {
+  const tables = await knex("tables").where({table_id: tableId}).select('*').first();
+  return await knex.transaction(async(trx) => {
+    await Promise.all([
+      trx("tables").where({table_id: tableId}).update({reservation_id: null}, "reservation_id"),
+      trx("reservations").where({reservation_id: tables.reservation_id}).update({status: "finished"}),
+    ])
+    return await knex.transaction(async(trx) => {
+      trx("reservations").select('*').where({reservation_id: tables.reservation_id}).first()
+    })
+  })
 }
 
 
