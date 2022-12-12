@@ -11,7 +11,7 @@ function validatePeopleIsANumber(req, res, next) {
   if(Number.isInteger(data.people) && data.people > 0) {
     next();
   } else {
-    const error = new Error(`'People' is required to be a number and positive.`);
+    const error = new Error(`'people' is required to be a number and positive.`);
     error.status = 400;
     throw error;
   }
@@ -71,7 +71,7 @@ function validateWindow(req, res, next) {
  */
 function validateStatusIsBookedForPost(req, res, next) {
   const { data = {} } = req.body;
-  if(data.status === "booked") {
+  if(data.status === "booked" || data.status === undefined) {
     next()
   } else if (data.status === "seated") {
     const error = new Error(`The status can not start as 'seated' for a new reservation.`)
