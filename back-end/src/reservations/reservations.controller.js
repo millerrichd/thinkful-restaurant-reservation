@@ -110,9 +110,10 @@ function validateStatusComparedToExisting(req, res, next) {
 /**
  * List handler for reservation resources
  */
-async function list(req, res) {
+async function list(req, res, next) {
   console.log(`received the following date: ${req.query.date}`)
-  const data = await service.list(req.query.date);
+  console.log(`received the following mobile number: ${req.query.mobile_number}`)
+  const data = await service.list(req.query.date, req.query.mobile_number);
   res.json({ data });
 }
 
@@ -137,10 +138,17 @@ async function reservationExists(req, res, next) {
   next({status: 404, message: `Reservation '${reservationId}' not found.`});
 }
 
+/** 
+ * return the reservation data
+ */
 async function read(req, res, next) {
   const data = res.locals.reservation;
   res.json({data});
 }
+
+/**
+ * update the status based on provided status
+ */
 
 async function updateStatus(req, res, next) {
   const { data = {} } = req.body;

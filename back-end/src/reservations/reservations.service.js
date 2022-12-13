@@ -1,3 +1,4 @@
+const { query } = require("express");
 const knex = require("../db/connection");
 
 /**
@@ -13,11 +14,18 @@ function read(reservationId) {
 /**
  * Return all reservations
  */
-function list(queryDate) {
-  if(!queryDate) {
+function list(queryDate, queryMobileNumber) {
+  if(!queryDate && !queryMobileNumber) {
     return knex("reservations as r")
       .select("*")
       .whereNot({"r.status": "finished"})
+  } else if(queryMobileNumber) {
+    return knex("reservations")
+    .whereRaw(
+      "translate(mobile_number, '() -', '') like ?",
+      `%${queryMobileNumber.replace(/\D/g, "")}%`
+    )
+    .orderBy("reservation_date");
   } else {
     return knex("reservations as r")
       .select("*")
