@@ -74,7 +74,12 @@ function Dashboard({ date, setDate }) {
           <div>{reservation.first_name} {reservation.last_name}</div>
           <div>{reservation.mobile_number}</div>
           <div>{reservation.people}</div>
-          <div><Link to={`reservations/${reservation.reservation_id}/seat`}>Seat</Link></div>
+          <div data-reservation-id-status={reservation.reservation_id}>{reservation.status}</div>
+          {reservation.status === "booked" ? (
+            <div><Link to={`reservations/${reservation.reservation_id}/seat`}>Seat</Link></div>
+          ) : (
+            <></>
+          )}
         </div>
       ))}
       <div className="d-md-flex mb-3">
