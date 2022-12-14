@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { Link, useHistory } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { today, previous, next } from "../utils/date-time"
@@ -13,7 +13,6 @@ import { API_BASE_URL as url } from "../utils/api"
  * @returns {JSX.Element}
  */
 function Dashboard({ date, setDate }) {
-  const history = useHistory();
   const [reservations, setReservations] = useState([]);
   const [tables, setTables] = useState([]);
   const [reservationsError, setReservationsError] = useState(null);
