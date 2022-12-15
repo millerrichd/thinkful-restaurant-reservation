@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
+import axios from "axios";
+
 import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
-import { today, previous, next } from "../utils/date-time"
-import axios from "axios";
-import { API_BASE_URL as url } from "../utils/api"
+import { today, previous, next } from "../utils/date-time";
+import { API_BASE_URL as url } from "../utils/api";
 
 /**
  * Defines the dashboard page.
@@ -51,6 +52,25 @@ function Dashboard({ date, setDate }) {
     }
   }
 
+  const cancelReservation = (reservationId) => {
+    const response = window.confirm(
+      'Do you want to cancel this reservation? This cannot be undone.'
+    )
+    console.log("RESPONSE OF CANCEL", response)
+    console.log("RESERVATION ID", reservationId)
+    if(response) {
+      axios({method: 'put', url: `${url}/reservations/${reservationId}/status`, data: { data: {status: "cancelled" } } }).then((res) => {
+        console.log("RES.STATUS", res.status)
+        if(res.status === 200) {
+          loadDashboard()
+        }
+      })
+      .catch((err) => {
+        console.log("ERROR", err)
+      })
+    }
+  }
+
   return (
     <main>
       <h1>Dashboard</h1>
@@ -75,7 +95,11 @@ function Dashboard({ date, setDate }) {
           <div>{reservation.people}</div>
           <div data-reservation-id-status={reservation.reservation_id}>{reservation.status}</div>
           {reservation.status === "booked" ? (
-            <div><Link to={`reservations/${reservation.reservation_id}/seat`}>Seat</Link></div>
+            <>
+              <div><Link to={`reservations/${reservation.reservation_id}/seat`}>Seat</Link></div>
+              <div><Link to={`reservations/${reservation.reservation_id}/edit`}>Edit</Link></div>
+              <div><button data-reservation-id-cancel={reservation.reservation_id} onClick={() => cancelReservation(reservation.reservation_id) }>Cancel</button></div>
+            </>
           ) : (
             <></>
           )}

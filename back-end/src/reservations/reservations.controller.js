@@ -163,6 +163,7 @@ async function read(req, res, next) {
 async function updateStatus(req, res, next) {
   const { data = {} } = req.body;
   const { reservationId } = req.params;
+  console.log("DATA", data, "RESERVATION ID", reservationId)
   const result = await service.updateStatus(reservationId, data.status)
   res.json({data: { status: result}})
 }

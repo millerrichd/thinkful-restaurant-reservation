@@ -6,6 +6,7 @@ import NotFound from "./NotFound";
 import { today } from "../utils/date-time";
 
 import NewReservation from "../reservations/NewReservation";
+import EditReservation from "../reservations/EditReservation";
 import NewTable from "../tables/NewTable";
 import SeatReservation from "../reservations/SeatReservation";
 import Search from "../dashboard/Search"
@@ -35,6 +36,9 @@ function Routes() {
       </Route>
       <Route exact={true} path="/reservations/new">
         <NewReservation setDate={setDate}/>
+      </Route>
+      <Route exact={true} path="/reservations/:reservationId/edit">
+        <EditReservation setDate={setDate}/>
       </Route>
       <Route exact={true} path="/reservations">
         <Redirect to={"/dashboard"} />
