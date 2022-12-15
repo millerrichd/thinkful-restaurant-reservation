@@ -94,7 +94,7 @@ function validateStatusIsBookedForPost(req, res, next) {
 function validateStatusComparedToExisting(req, res, next) {
   const { data = {} } = req.body;
   const existingReservation = res.locals.reservation
-  if(data.status !== "booked" && data.status !== "seated" && data.status !== "finished") {
+  if(data.status !== "booked" && data.status !== "seated" && data.status !== "finished" && data.status !== "cancelled") {
     const error = new Error(`Status '${data.status}' unknown`);
     error.status = 400;
     throw error;
@@ -118,14 +118,6 @@ async function list(req, res, next) {
 }
 
 /**
- * Create a new reservation record
- */
-async function create(req, res, next) {
-  const data = await service.create(req.body.data);
-  res.status(201).json({data});
-}
-
-/**
  * Read the current reservation record
  */
 async function reservationExists(req, res, next) {
@@ -138,6 +130,24 @@ async function reservationExists(req, res, next) {
   next({status: 404, message: `Reservation '${reservationId}' not found.`});
 }
 
+/**
+ * Create a new reservation record
+ */
+async function create(req, res, next) {
+  const data = await service.create(req.body.data);
+  res.status(201).json({data});
+}
+
+/** 
+ * Update an existing reservaton record
+ */
+async function update(req, res, next) {
+  const reservation = req.body.data;
+  const { reservation_id } = res.locals.reservation;
+  reservation.reservation_id = reservation_id;
+  const data = await service.update(reservation);
+  res.json({data});
+}
 /** 
  * return the reservation data
  */
@@ -167,6 +177,15 @@ module.exports = {
     validateWindow,
     validateStatusIsBookedForPost,
     asyncErrorBoundary(create)
+  ],
+  update: [
+    asyncErrorBoundary(reservationExists),
+    hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people"),
+    validatePeopleIsANumber,
+    validateDateIsFormattedCorrect,
+    validateTimeIsFormattedCorrect,
+    validateWindow,
+    asyncErrorBoundary(update)
   ],
   read: [
     asyncErrorBoundary(reservationExists),
