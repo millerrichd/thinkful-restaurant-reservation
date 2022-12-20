@@ -48,8 +48,9 @@ function validateDateIsFormattedCorrect(req, res, next) {
 function validateWindow(req, res, next) {
   const { data = {} } = req.body;
   const today = moment();
-  const testDateTime = moment(`${data.reservation_date}T${data.reservation_time}Z`);
+  const testDateTime = moment(`${data.reservation_date}T${data.reservation_time}`);
 
+  console.log("TESTDATETIME", testDateTime, today, testDateTime < today)
   if(testDateTime < today) { 
     const error = new Error(`Date occurs in the past. Please select a date and time in the future.`)
     error.status = 400;
