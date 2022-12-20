@@ -11,7 +11,7 @@ function FormTables({handleSubmit, handleCancel, setFormData, formData}) {
         <div className="form-group">
           <label htmlFor="table_name">Table Name</label>
           <input
-            className="form-control"
+            className="form-control searchbar"
             id="table_name"
             type="text"
             name="table_name"
@@ -21,15 +21,15 @@ function FormTables({handleSubmit, handleCancel, setFormData, formData}) {
         <div className="form-group">
           <label htmlFor="capacity">Capacity</label>
           <input
-            className="form-control"
+            className="form-control searchbar"
             id="capacity"
             type="number"
             name="capacity"
             onChange={handleChange}
             defaultValue={formData.capacity}/>
         </div>
-        <button type="reset" onClick={handleCancel}>Cancel</button>
-        <button type="submit">Submit</button>
+        <button className="btn btn-secondary" type="reset" onClick={handleCancel}>Cancel</button>
+        <button className="btn btn-primary mx-2" type="submit">Submit</button>
       </form>
     </>
   )

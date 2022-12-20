@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import axios from "axios";
 
 import { listReservations, listTables } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
 import { today, previous, next } from "../utils/date-time";
 import { API_BASE_URL as url } from "../utils/api";
+import TableSection from "./TableSection";
+import ReservationSection from "./ReservationSection";
 
 /**
  * Defines the dashboard page.
@@ -72,54 +73,30 @@ function Dashboard({ date, setDate }) {
   }
 
   return (
-    <main>
-      <h1>Dashboard</h1>
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Reservations for date</h4>
-      </div>
-      <div>
-        <button onClick={() => setDate(prevDay)}>Previous</button>
-        <button onClick={() => setDate(day)}>Today</button>
-        <button onClick={() => setDate(nextDay)}>Next</button>
-      </div>
-      <ErrorAlert error={reservationsError} />
-      <ErrorAlert error={tablesError} />
-      {reservations.length === 0 && (
-        <h5>There are no reservations for {date}</h5>
-      )}
-      {reservations.map((reservation) => (
-        <div key={reservation.reservation_id}>
-          <div>{reservation.reservation_time} {reservation.reservation_date}</div>
-          <div>{reservation.first_name} {reservation.last_name}</div>
-          <div>{reservation.mobile_number}</div>
-          <div>{reservation.people}</div>
-          <div data-reservation-id-status={reservation.reservation_id}>{reservation.status}</div>
-          {reservation.status === "booked" ? (
-            <>
-              <div><Link to={`reservations/${reservation.reservation_id}/seat`}>Seat</Link></div>
-              <div><Link to={`reservations/${reservation.reservation_id}/edit`}>Edit</Link></div>
-              <div><button data-reservation-id-cancel={reservation.reservation_id} onClick={() => cancelReservation(reservation.reservation_id) }>Cancel</button></div>
-            </>
-          ) : (
-            <></>
+    <main className="container">
+      <h1 className="text-center">Dashboard</h1>
+      <div className="d-md-flex flex-row justify-content-around">
+        <section>
+          <div className="d-md-flex mb-3 text-center">
+            <h4 className="text-center mb-0">Reservations for date {date}</h4>
+          </div>
+          <div className="text-center">
+            <button className="btn btn-secondary m-2" onClick={() => setDate(prevDay)}>Previous</button>
+            <button className="btn btn-primary m-2" onClick={() => setDate(day)}>Today</button>
+            <button className="btn btn-secondary m-2" onClick={() => setDate(nextDay)}>Next</button>
+          </div>
+          <ErrorAlert error={reservationsError} />
+          <ErrorAlert error={tablesError} />
+          {reservations.length === 0 && (
+            <h5 className="text-center my-3">There are no reservations</h5>
           )}
-        </div>
-      ))}
-      <div className="d-md-flex mb-3">
-        <h4 className="mb-0">Tables</h4>
+          <ReservationSection date={date} reservationsError={reservationsError} reservations={reservations} cancelReservation={cancelReservation}/>
+        </section>
+        <section>
+          <TableSection tablesError={tablesError} tables={tables} finishTable={finishTable}/>
+        </section>
       </div>
-      {tables.map((table) => (
-        <div key={table.table_id}>
-          <div>{table.table_name}</div>
-          <div>{table.capacity}</div>
-          <div data-table-id-status={table.table_id}>{table.reservation_id ? "Occupied" : "Free"}</div>
-          {table.reservation_id ? (
-            <button data-table-id-finish={table.table_id} onClick={() => finishTable(table.table_id)}>Finish</button>
-          ) : (
-            <></>
-          )}
-        </div>
-      ))}
+
     </main>
   );
 }

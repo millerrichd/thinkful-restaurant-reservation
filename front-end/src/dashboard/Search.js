@@ -1,7 +1,9 @@
 import React, { useEffect, useState } from "react";
-import { Link } from "react-router-dom";
 import { listReservations } from "../utils/api";
 import ErrorAlert from "../layout/ErrorAlert";
+import ReservationSection from "./ReservationSection";
+import axios from "axios";
+import { API_BASE_URL as url } from "../utils/api";
 
 /**
  * Defines the dashboard page.
@@ -39,6 +41,25 @@ function Search() {
     setMobileNumber("");
   }
 
+  const cancelReservation = (reservationId) => {
+    const response = window.confirm(
+      'Do you want to cancel this reservation? This cannot be undone.'
+    )
+    console.log("RESPONSE OF CANCEL", response)
+    console.log("RESERVATION ID", reservationId)
+    if(response) {
+      axios({method: 'put', url: `${url}/reservations/${reservationId}/status`, data: { data: {status: "cancelled" } } }).then((res) => {
+        console.log("RES.STATUS", res.status)
+        if(res.status === 200) {
+          loadDashboard()
+        }
+      })
+      .catch((err) => {
+        console.log("ERROR", err)
+      })
+    }
+  }
+
   return (
     <main>
       <h1>Search</h1>
@@ -46,32 +67,19 @@ function Search() {
         <form onSubmit={handleSearch}>
           <label htmlFor="mobile_number">Search</label>
           <input 
-            className="form-control"
+            className="form-control searchbar"
             id="mobile_number"
             name="mobile_number"
             onChange={handleChange}
             defaultValue={mobileNumber} />
-          <button type="submit">Find</button>
+          <button className="btn btn-secondary" type="submit">Find</button>
         </form>
       </div>
       <ErrorAlert error={reservationsError} />
       {reservations.length === 0 && (
-        <h5>No reservations found.</h5>
+        <h5 className="text-center my-3">No reservations found.</h5>
       )}
-      {reservations.map((reservation) => (
-        <div key={reservation.reservation_id}>
-          <div>{reservation.reservation_time} {reservation.reservation_date}</div>
-          <div>{reservation.first_name} {reservation.last_name}</div>
-          <div>{reservation.mobile_number}</div>
-          <div>{reservation.people}</div>
-          <div data-reservation-id-status={reservation.reservation_id}>{reservation.status}</div>
-          {reservation.status === "booked" ? (
-            <div><Link to={`reservations/${reservation.reservation_id}/seat`}>Seat</Link></div>
-          ) : (
-            <></>
-          )}
-        </div>
-      ))}
+      <ReservationSection reservationsError={reservationsError} reservations={reservations} cancelReservation={cancelReservation}/>
     </main>
   );
 }

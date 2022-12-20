@@ -73,8 +73,8 @@ function SeatReservation() {
             ))}
           </select>
         </div>
-        <button type="reset" onClick={handleCancel}>Cancel</button>
-        <button type="submit">Submit</button>
+        <button className="btn btn-secondary" type="reset" onClick={handleCancel}>Cancel</button>
+        <button className="btn btn-primary mx-2" type="submit">Submit</button>
       </form>
     </>
   )

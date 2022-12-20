@@ -11,7 +11,7 @@ function FormReservation({handleSubmit, handleCancel, setFormData, formData, set
       <div className="form-group">
           <label htmlFor="first_name">First Name</label>
           <input
-            className="form-control"
+            className="form-control searchbar"
             id="first_name"
             type="text"
             name="first_name"
@@ -21,7 +21,7 @@ function FormReservation({handleSubmit, handleCancel, setFormData, formData, set
         <div className="form-group">
           <label htmlFor="last_name">Last Name</label>
           <input
-            className="form-control"
+            className="form-control searchbar"
             id="last_name"
             type="text"
             name="last_name"
@@ -31,7 +31,7 @@ function FormReservation({handleSubmit, handleCancel, setFormData, formData, set
         <div className="form-group">
           <label htmlFor="mobile_number">Mobile Number</label>
           <input
-            className="form-control"
+            className="form-control searchbar"
             id="mobile_number"
             type="text"
             name="mobile_number"
@@ -41,7 +41,7 @@ function FormReservation({handleSubmit, handleCancel, setFormData, formData, set
         <div className="form-group">
           <label htmlFor="reservation_date">Reservation Date</label>
           <input
-            className="form-control"
+            className="form-control searchbar"
             id="reservation_date"
             type="date"
             placeholder="YYYY-MM-DD"
@@ -53,7 +53,7 @@ function FormReservation({handleSubmit, handleCancel, setFormData, formData, set
         <div className="form-group">
           <label htmlFor="reservation_time">Reservation Time</label>
           <input
-            className="form-control"
+            className="form-control searchbar"
             id="reservation_time"
             type="time"
             placeholder="HH:MM"
@@ -65,15 +65,15 @@ function FormReservation({handleSubmit, handleCancel, setFormData, formData, set
         <div className="form-group">
           <label htmlFor="people">People</label>
           <input
-            className="form-control"
+            className="form-control searchbar"
             id="people"
             type="number"
             name="people"
             onChange={handleChange}
             defaultValue={formData.people}/>
         </div>
-        <button type="reset" onClick={handleCancel}>Cancel</button>
-        <button type="submit">Submit</button>
+        <button className="btn btn-secondary" type="reset" onClick={handleCancel}>Cancel</button>
+        <button className="btn btn-primary mx-2" type="submit">Submit</button>
       </form>
     </>
   )
