@@ -5,7 +5,7 @@ import { BrowserRouter as Router } from "react-router-dom";
 
 ReactDOM.render(
   <React.StrictMode>
-    <Router basename="/thinkful-restaurant-reservation-frontend">
+    <Router basename="./">
       <App />
     </Router>
   </React.StrictMode>,
