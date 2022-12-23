@@ -17,7 +17,7 @@ function TableSection({tablesError, tables, finishTable}) {
           ) : (
             <></>
           )}
-          <div className="d-flex flex-column card">
+          <div className="d-flex flex-column card p-3 text-light">
             <div className="card-titlefs-3">Table: {table.table_name}</div>
             <div className="card-text">Capacity: {table.capacity}</div>
             <div data-table-id-status={table.table_id} className="card-text text-uppercase">Status: {table.reservation_id ? "Occupied" : "Free"}</div>
