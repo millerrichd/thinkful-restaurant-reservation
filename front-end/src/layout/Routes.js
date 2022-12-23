@@ -28,9 +28,9 @@ function Routes() {
 
   return (
     <Switch>
-      {/* <Route exact={true} path="/">
+      <Route exact={true} path="/">
         <Redirect to={"/dashboard"} />
-      </Route> */}
+      </Route>
       <Route exact={true} path="/reservations/:reservationId/seat">
         <SeatReservation/>
       </Route>
@@ -41,7 +41,7 @@ function Routes() {
         <EditReservation setDate={setDate}/>
       </Route>
       <Route exact={true} path="/reservations">
-        <Redirect to={"/"} />
+        <Redirect to={"/dashboard"} />
       </Route>
       <Route exact={true} path="/tables/new">
         <NewTable />
@@ -49,7 +49,7 @@ function Routes() {
       <Route exact={true} path="/search">
         <Search />
       </Route>
-      <Route path="/" >
+      <Route path="/dashboard" >
         <Dashboard date={date} setDate={setDate}/>
       </Route>
       <Route>
