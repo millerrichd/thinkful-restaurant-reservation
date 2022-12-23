@@ -17,10 +17,10 @@ function TableSection({tablesError, tables, finishTable}) {
           ) : (
             <></>
           )}
-          <div className="d-flex flex-column">
-            <div className="text-start fs-3">Table: {table.table_name}</div>
-            <div className="text-start fs-5">Capacity: {table.capacity}</div>
-            <div data-table-id-status={table.table_id} className="text-start fs-5 text-uppercase">Status: {table.reservation_id ? "Occupied" : "Free"}</div>
+          <div className="d-flex flex-column card">
+            <div className="card-titlefs-3">Table: {table.table_name}</div>
+            <div className="card-text">Capacity: {table.capacity}</div>
+            <div data-table-id-status={table.table_id} className="card-text text-uppercase">Status: {table.reservation_id ? "Occupied" : "Free"}</div>
           </div>
         </div>
         <hr/>

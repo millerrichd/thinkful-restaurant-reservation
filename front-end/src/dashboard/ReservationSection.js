@@ -18,13 +18,13 @@ function ReservationSection({date, reservationsError, reservations, cancelReserv
             ) : (
               <></>
             )}
-            <div className="d-flex flex-column">
-              <div className="text-start mt-2 fs-1">{reservation.reservation_time}</div>
-              <div className="text-start fs-5">Date: {reservation.reservation_date}</div>
-              <div className="text-start fs-5">Name: {reservation.first_name} {reservation.last_name}</div>
-              <div className="text-start fs-5">Mobile: {reservation.mobile_number}</div>
-              <div className="text-start fs-5">People: {reservation.people}</div>
-              <div data-reservation-id-status={reservation.reservation_id} className="fs-5 text-uppercase">Status: {reservation.status}</div>
+            <div className="d-flex flex-column card">
+              <div className="mt-2 card-title">{reservation.reservation_time}</div>
+              <div className="card-text">Date: {reservation.reservation_date}</div>
+              <div className="card-text">Name: {reservation.first_name} {reservation.last_name}</div>
+              <div className="card-text">Mobile: {reservation.mobile_number}</div>
+              <div className="card-text">People: {reservation.people}</div>
+              <div data-reservation-id-status={reservation.reservation_id} className="card-text text-uppercase">Status: {reservation.status}</div>
             </div>
           </div>
           <hr/>
