@@ -139,23 +139,23 @@ async function deleteSeat(req, res, next) {
 }
 
 module.exports = {
-  list,
+  list: asyncErrorBoundary(list),
   create: [
-    hasProperties("table_name", "capacity"),
-    verifyTableNameLength,
-    verifyCapacityIsNumber,
+    asyncErrorBoundary(hasProperties("table_name", "capacity")),
+    asyncErrorBoundary(verifyTableNameLength),
+    asyncErrorBoundary(verifyCapacityIsNumber),
     asyncErrorBoundary(create)
   ],
   seat: [ 
     asyncErrorBoundary(tableExists),
-    hasProperties("reservation_id"),
+    asyncErrorBoundary(hasProperties("reservation_id")),
     asyncErrorBoundary(verifyTableHasCapacity),
-    verifyIfReservationIsNotSeated,
+    asyncErrorBoundary(verifyIfReservationIsNotSeated),
     asyncErrorBoundary(seat)
   ],
   deleteSeat: [
     asyncErrorBoundary(tableExists),
-    verifySeatOccupiedForDelete,
+    asyncErrorBoundary(verifySeatOccupiedForDelete),
     asyncErrorBoundary(deleteSeat)
   ]
 };

@@ -34,7 +34,7 @@ function validateDateIsFormattedCorrect(req, res, next) {
 /**
  * validate the time is formatted correctly
  */
- function validateTimeIsFormattedCorrect(req, res, next) {
+function validateTimeIsFormattedCorrect(req, res, next) {
   const { data = {} } = req.body;
   if(data.reservation_time.match(/\d\d?:\d{2}/)) {
     next();
@@ -170,32 +170,32 @@ async function updateStatus(req, res, next) {
 }
 
 module.exports = {
-  list,
+  list: asyncErrorBoundary(list),
   create: [
-    hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people"),
-    validatePeopleIsANumber,
-    validateDateIsFormattedCorrect,
-    validateTimeIsFormattedCorrect,
-    validateWindow,
-    validateStatusIsBookedForPost,
+    asyncErrorBoundary(hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people")),
+    asyncErrorBoundary(validatePeopleIsANumber),
+    asyncErrorBoundary(validateDateIsFormattedCorrect),
+    asyncErrorBoundary(validateTimeIsFormattedCorrect),
+    asyncErrorBoundary(validateWindow),
+    asyncErrorBoundary(validateStatusIsBookedForPost),
     asyncErrorBoundary(create)
   ],
   update: [
     asyncErrorBoundary(reservationExists),
-    hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people"),
-    validatePeopleIsANumber,
-    validateDateIsFormattedCorrect,
-    validateTimeIsFormattedCorrect,
-    validateWindow,
+    asyncErrorBoundary(hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people")),
+    asyncErrorBoundary(validatePeopleIsANumber),
+    asyncErrorBoundary(validateDateIsFormattedCorrect),
+    asyncErrorBoundary(validateTimeIsFormattedCorrect),
+    asyncErrorBoundary(validateWindow),
     asyncErrorBoundary(update)
   ],
   read: [
     asyncErrorBoundary(reservationExists),
-    read
+    asyncErrorBoundary(read)
   ],
   updateStatus: [
     asyncErrorBoundary(reservationExists),
-    validateStatusComparedToExisting,
+    asyncErrorBoundary(validateStatusComparedToExisting),
     asyncErrorBoundary(updateStatus)
   ]
 };
