@@ -54,10 +54,10 @@ function SeatReservation() {
   return (
     <>
       {errorMessages.map((errorMsg, index) => (
-        <ErrorAlert key={index} error={errorMsg}/>
+        <ErrorAlert key={`reservationError-${index}`} error={errorMsg}/>
       ))}
       {tablesError.map((errorMsg, index) => (
-        <ErrorAlert key={index} error={errorMsg}/>
+        <ErrorAlert key={`tableError-${index}`} error={errorMsg}/>
       ))}
       <form onSubmit={handleSubmit}>
         <div className="form-group">
@@ -70,8 +70,8 @@ function SeatReservation() {
             onChange={handleChange}
           >
             <option key="0" value="0">Select a Table</option>
-            {tables.map((table, index) => (
-              <option key={index} value={table.table_id}>{table.table_name} - {table.capacity}</option>
+            {tables.map((table) => (
+              <option key={table.table_id} value={table.table_id}>{table.table_name} - {table.capacity}</option>
             ))}
           </select>
         </div>
