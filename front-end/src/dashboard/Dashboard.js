@@ -38,18 +38,38 @@ function Dashboard({ date, setDate }) {
   const prevDay = previous(date);
   const nextDay = next(date);
 
+  function cancelReservationCall(reservationId) {
+    const abortController = new AbortController();
+    axios.put(`${url}/reservations/${reservationId}/status`, { data: { status: "cancelled" }, signal: abortController.signal }).then((res) => {
+      console.log("RES.STATUS", res.status)
+      if(res.status === 200) {
+        loadDashboard()
+      }
+    })
+    .catch((err) => {
+      console.log("ERROR", err)
+    })
+    return () => abortController.abort();
+  }
+
+  function finishTableCall(tableId) {
+    const abortController = new AbortController();
+    axios.delete(`${url}/tables/${tableId}/seat`, { signal: abortController.signal }).then((res) => {
+      console.log("RES.STATUS", res.status)
+      if(res.status === 200) {
+        loadDashboard()
+      }
+    })
+    return () => abortController.abort();
+  }
+
   const finishTable = (tableId) => {
     const response = window.confirm(
       'Is this table ready to seat new guests? This cannot be undone.'
     )
     console.log("RESPONSE OF DELETE", response)
     if(response) {
-      axios.delete(`${url}/tables/${tableId}/seat`).then((res) => {
-        console.log("RES.STATUS", res.status)
-        if(res.status === 200) {
-          loadDashboard()
-        }
-      })
+      finishTableCall(tableId);
     }
   }
 
@@ -60,15 +80,7 @@ function Dashboard({ date, setDate }) {
     console.log("RESPONSE OF CANCEL", response)
     console.log("RESERVATION ID", reservationId)
     if(response) {
-      axios({method: 'put', url: `${url}/reservations/${reservationId}/status`, data: { data: {status: "cancelled" } } }).then((res) => {
-        console.log("RES.STATUS", res.status)
-        if(res.status === 200) {
-          loadDashboard()
-        }
-      })
-      .catch((err) => {
-        console.log("ERROR", err)
-      })
+      cancelReservationCall(reservationId);
     }
   }
 

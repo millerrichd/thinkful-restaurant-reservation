@@ -35,9 +35,10 @@ function SeatReservation() {
     await seatReservation(selected);
   }
 
-  async function seatReservation(data, signal) {
+  async function seatReservation(data) {
     console.log(`${url}/tables/${Number(data)}/seat`)
-    axios.put(`${url}/tables/${Number(data)}/seat`, { data: {reservation_id: Number(reservationId)}})
+    const abortController = new AbortController();
+    axios.put(`${url}/tables/${Number(data)}/seat`, { data: {reservation_id: Number(reservationId)}, signal: abortController.signal })
       .then((res) => {
         console.log(res)
         if(res.status === 200) {
@@ -47,6 +48,7 @@ function SeatReservation() {
       .catch((err) => {
         setErrorMessages([{message: err.response.data.error}])
       })
+    return () => abortController.abort();
   }
 
   return (

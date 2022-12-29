@@ -24,10 +24,11 @@ function NewReservation() {
     await createNewTable(formData);
   }
 
-  async function createNewTable(data, signal) {
-    console.log(data.capacity)
+  async function createNewTable(data) {
+    console.log(data.capacity);
     data.capacity = Number(data.capacity);
-    axios.post(`${url}/tables`, { data: data})
+    const abortController = new AbortController();
+    axios.post(`${url}/tables`, { data: data, signal: abortController.signal })
       .then((res) => {
         if(res.status === 201) {
           history.push(`/dashboard`)
@@ -36,6 +37,7 @@ function NewReservation() {
       .catch((err) => {
         setErrorMessages([{message: err.response.data.error}])
       })
+    return () => abortController.abort();
   }
 
   return (

@@ -20,9 +20,10 @@ function EditReservation({setDate}) {
     await updateNewReservation(formData);
   }
 
-  async function updateNewReservation(data, signal) {
+  async function updateNewReservation(data) {
     data.people = Number(data.people);
-    axios.put(`${url}/reservations/${reservationId}`, { data: data})
+    const abortController = new AbortController();
+    axios.put(`${url}/reservations/${reservationId}`, { data: data, signal: abortController.signal })
       .then((res) => {
         if(res.status === 200) {
           setDate(formData.reservation_date)
@@ -32,12 +33,13 @@ function EditReservation({setDate}) {
       .catch((err) => {
         setErrorMessages([{message: err.response.data.error}])
       })
+    return () => abortController.abort();
   }
 
   useEffect(() => {
     const abortController = new AbortController();
     console.log("RESERVATION ID", reservationId)
-    axios.get(`${url}/reservations/${reservationId}`)
+    axios.get(`${url}/reservations/${reservationId}`, { signal: abortController.signal })
       .then((res) => {
         setFormData(res.data.data);
       })

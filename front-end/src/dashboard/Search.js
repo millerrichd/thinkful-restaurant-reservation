@@ -41,6 +41,20 @@ function Search() {
     setMobileNumber("");
   }
 
+  function cancelReservationCall(reservationId) {
+    const abortController = new AbortController();
+    axios.put(`${url}/reservations/${reservationId}/status`, { data: { status: "cancelled" }, signal: abortController.signal }).then((res) => {
+      console.log("RES.STATUS", res.status)
+      if(res.status === 200) {
+        loadDashboard()
+      }
+    })
+    .catch((err) => {
+      console.log("ERROR", err)
+    })
+    return () => abortController.abort();
+  }
+
   const cancelReservation = (reservationId) => {
     const response = window.confirm(
       'Do you want to cancel this reservation? This cannot be undone.'
@@ -48,15 +62,7 @@ function Search() {
     console.log("RESPONSE OF CANCEL", response)
     console.log("RESERVATION ID", reservationId)
     if(response) {
-      axios({method: 'put', url: `${url}/reservations/${reservationId}/status`, data: { data: {status: "cancelled" } } }).then((res) => {
-        console.log("RES.STATUS", res.status)
-        if(res.status === 200) {
-          loadDashboard()
-        }
-      })
-      .catch((err) => {
-        console.log("ERROR", err)
-      })
+      cancelReservationCall(reservationId);
     }
   }
 

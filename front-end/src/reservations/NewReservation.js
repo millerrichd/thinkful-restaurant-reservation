@@ -30,7 +30,8 @@ function NewReservation({setDate}) {
 
   async function createNewReservation(data, signal) {
     data.people = Number(data.people);
-    axios.post(`${url}/reservations`, { data: data})
+    const abortController = new AbortController();
+    axios.post(`${url}/reservations`, { data: data, signal: abortController.signal})
       .then((res) => {
         if(res.status === 201) {
           setDate(formData.reservation_date)
@@ -40,6 +41,7 @@ function NewReservation({setDate}) {
       .catch((err) => {
         setErrorMessages([{message: err.response.data.error}])
       })
+    return () => abortController.abort();
   }
 
   return (
