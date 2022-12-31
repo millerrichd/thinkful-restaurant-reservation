@@ -56,7 +56,7 @@ function EditReservation({setDate}) {
       {errorMessages.map((errorMsg, index) => (
         <ErrorAlert key={`error-${index}`} error={errorMsg}/>
       ))}
-      <FormReservation handleSubmit={handleSubmit} handleCancel={handleCancel} setFormData={setFormData} formData={formData} setErrorMessages={setErrorMessages} />
+      <FormReservation handleSubmit={handleSubmit} handleCancel={handleCancel} setFormData={setFormData} formData={formData} errorMessages={errorMessages} setErrorMessages={setErrorMessages} />
     </>
   )
 }

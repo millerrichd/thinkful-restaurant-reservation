@@ -65,9 +65,9 @@ describe("US-03 - Create reservation on a future, working date - E2E", () => {
       });
 
       expect(await page.$(".alert-danger")).toBeFalsy();
-
+      
       await page.click("button[type=submit]");
-
+      
       await page.screenshot({
         path: ".screenshots/us-02-reservation-almost-closing-after.png",
       });

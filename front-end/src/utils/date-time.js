@@ -18,6 +18,10 @@ function asDateString(date) {
     .padStart(2, "0")}-${date.getDate().toString(10).padStart(2, "0")}`;
 }
 
+function asTimeString(date) {
+  return `${date.getHours()}:${date.getMinutes()}:${date.getSeconds()}`;
+}
+
 /**
  * Format a date string in ISO-8601 format (which is what is returned from PostgreSQL) as YYYY-MM-DD.
  * @param dateString
@@ -47,6 +51,15 @@ export function formatAsTime(timeString) {
  */
 export function today() {
   return asDateString(new Date());
+}
+
+export function timeNow() {
+  return asTimeString(new Date());
+}
+
+export function dayOfWeek(date) {
+  const dateObj = new Date(date)
+  return dateObj.getDay();
 }
 
 /**
@@ -80,3 +93,4 @@ export function next(currentDate) {
   date.setDate(date.getDate() + 1);
   return asDateString(date);
 }
+
