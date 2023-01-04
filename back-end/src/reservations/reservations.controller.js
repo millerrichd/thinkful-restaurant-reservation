@@ -125,6 +125,7 @@ async function reservationExists(req, res, next) {
   const { reservationId } = req.params;
   const data = await service.read(reservationId);
   if(data) {
+    data.reservation_date = `${data.reservation_date.getFullYear()}-${(data.reservation_date.getMonth()+1).toString().padStart(2, "0")}-${data.reservation_date.getDate().toString().padStart(2, "0")}`
     res.locals.reservation = data;
     return next();
   }
@@ -135,6 +136,7 @@ async function reservationExists(req, res, next) {
  * Create a new reservation record
  */
 async function create(req, res, next) {
+  console.log("CREATE-RES-DATE", req.body.data.reservation_date)
   const data = await service.create(req.body.data);
   res.status(201).json({data});
 }
@@ -143,6 +145,7 @@ async function create(req, res, next) {
  * Update an existing reservaton record
  */
 async function update(req, res, next) {
+  console.log("UPDATE-RES-DATE", req.body.data.reservation_date)
   const reservation = req.body.data;
   const { reservation_id } = res.locals.reservation;
   reservation.reservation_id = reservation_id;

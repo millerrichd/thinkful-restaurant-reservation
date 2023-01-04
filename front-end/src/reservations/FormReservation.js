@@ -3,82 +3,8 @@ import moment from "moment";
 
 function FormReservation({handleSubmit, handleCancel, setFormData, formData, errorMessages, setErrorMessages}) {
   const handleChange = ({target}) => {
-    const today = moment();
     if(target.name === "reservation_date") {
-      let testDateTime = moment();
-      if(formData.reservation_time) {
-        testDateTime = moment(`${target.value}T${formData.reservation_time}`);
-      } else {
-        testDateTime = moment(`${target.value}T00:00:00`);
-      }
-      if(testDateTime < today) {
-        let found = false
-        const tempErrorMessages = errorMessages
-        tempErrorMessages.forEach((err, index) => {
-          if(err.message === `Date occurs in the past. Please select a date and time in the future.`) {
-            found = true
-          }
-          if(err.message === `We are closed on Tuesday's, please select another day.`) {
-            if(testDateTime.format('dddd') !== "Tuesday") {
-              tempErrorMessages[index] = ''
-            }
-          }
-        })
-        if(!found) {
-          setErrorMessages([...tempErrorMessages, {message: `Date occurs in the past. Please select a date and time in the future.`}])
-        }
-      } else if(testDateTime.format('dddd') === "Tuesday") {
-        let found = false
-        const tempErrorMessages = errorMessages
-        tempErrorMessages.forEach((err, index) => {
-          if(err.message === `We are closed on Tuesday's, please select another day.`) {
-            found = true
-          }
-          if(err.message === `Date occurs in the past. Please select a date and time in the future.`) {
-            if(testDateTime >= today) {
-              tempErrorMessages[index] = ''
-            }
-          }
-        })
-        if(!found) {
-          setErrorMessages([...tempErrorMessages, {message: `We are closed on Tuesday's, please select another day.`}])
-        }
-      } else {
-        const tempError = [...errorMessages]
-        const set = new Set(tempError)
-        set.forEach((entry) => {
-          if(entry.message === `Date occurs in the past. Please select a date and time in the future.`) {
-            set.delete(entry);
-          }
-          if(entry.message === `We are closed on Tuesday's, please select another day.`) {
-            set.delete(entry);
-          }
-        })
-        setErrorMessages(Array.from(set))
-      }
-    } else if(target.name === "reservation_time") {
-      console.log("target.value < '10:30' || target.value > '21:30'", target.value < "10:30" || target.value > "21:30")
-      if(target.value < "10:30" || target.value > "21:30") {
-        let found = false
-        const tempErrorMessages = errorMessages
-        tempErrorMessages.forEach((err, index) => {
-          if(err.message === `The restaurant does not accept reservations before 10:30 AM and after 9:30 PM.`) {
-            found = true
-          }
-        })
-        if(!found) {
-          setErrorMessages([...tempErrorMessages, {message: `The restaurant does not accept reservations before 10:30 AM and after 9:30 PM.`}])
-        }
-      } else {
-        const tempError = [...errorMessages] 
-        const set = new Set(tempError)
-        set.forEach((entry) => {
-          if(entry.message === `The restaurant does not accept reservations before 10:30 AM and after 9:30 PM.`) {
-            set.delete(entry)
-          }
-        })
-        setErrorMessages(Array.from(set))
-      }
+      console.log("RES-DATE-CHANGE", target.value)
     }
     setFormData({...formData, [target.name]: target.value});
   }
