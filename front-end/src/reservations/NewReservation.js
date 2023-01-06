@@ -36,8 +36,12 @@ function NewReservation({setDate}) {
       tempErrorMessages.push({message: `Last Name must be provided.`})
     }
     //check the mobile number
+    const numRe = /\d{3}\-?\d{3}\-?\d{4}/
     if(!formData.mobile_number) {
       tempErrorMessages.push({message: `Mobile Number must be provided.`})
+    }
+    if(!formData.mobile_number.match(numRe)) {
+      tempErrorMessages.push({message: `Mobile Number is required to be either format of ###-###-#### or ##########`})
     }
     //check reservation date/time
     console.log("RES-DATE:", formData.reservation_date)

@@ -3,6 +3,21 @@ const service = require("./reservations.service");
 const asyncErrorBoundary = require("../errors/asyncErrorBoundary");
 const hasProperties = require("../errors/hasProperties");
 
+/** 
+ * Validate that mobile number is either ########## or ###-###-####
+ */
+function validateMobileNumber(req, res, next) {
+  const { data = {} } = req.body;
+  const numRe = /\d{3}\-?\d{3}\-?\d{4}/
+  if(data.mobile_number.match(numRe)) {
+    next();
+  } else {
+    const error = new Error(`'mobile_number' is required to be either format ###-###-#### or ##########`)
+    error.status = 400;
+    throw error;
+  }
+}
+
 /**
  * Confirm that property people is a positive number
  */
@@ -176,6 +191,7 @@ module.exports = {
   list: asyncErrorBoundary(list),
   create: [
     asyncErrorBoundary(hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people")),
+    asyncErrorBoundary(validateMobileNumber),
     asyncErrorBoundary(validatePeopleIsANumber),
     asyncErrorBoundary(validateDateIsFormattedCorrect),
     asyncErrorBoundary(validateTimeIsFormattedCorrect),
@@ -186,6 +202,7 @@ module.exports = {
   update: [
     asyncErrorBoundary(reservationExists),
     asyncErrorBoundary(hasProperties("first_name", "last_name", "mobile_number", "reservation_date", "reservation_time", "people")),
+    asyncErrorBoundary(validateMobileNumber),
     asyncErrorBoundary(validatePeopleIsANumber),
     asyncErrorBoundary(validateDateIsFormattedCorrect),
     asyncErrorBoundary(validateTimeIsFormattedCorrect),
